@@ -1,0 +1,28 @@
+version: '3'
+services:
+  broker:
+    build:
+      context: ../
+      dockerfile: ./DockerFiles/deploy.dockerfile
+    image: myimg:latest
+    ports:
+      - 8080:8000
+    container_name: brokerApi
+
+  postgresql:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+
+#testing reasons
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8000:80
+    container_name: nginx
+    volumes:
+      - ../routers:/mnt
+    

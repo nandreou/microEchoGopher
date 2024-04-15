@@ -17,7 +17,7 @@ func main() {
 	handlers.NewRepo(&app)
 
 	srv := http.Server{
-		Addr:    ":8080",
+		Addr:    ":8000",
 		Handler: routers.NewRouter(),
 	}
 
