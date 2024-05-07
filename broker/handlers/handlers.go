@@ -32,6 +32,7 @@ func (repo *Repository) LogIn(w http.ResponseWriter, r *http.Request) {
 	responseData, err := AuthCall(requestData.Email, requestData.Password)
 
 	if err != nil {
+		http.Error(w, "Sorry Error", http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
@@ -67,7 +68,7 @@ func (repo *Repository) EchoHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Error on Reading Data: ", err)
-		w.Write([]byte(fmt.Sprintln(err)))
+		http.Error(w, `Bad Request`, http.StatusBadRequest)
 		return
 	}
 

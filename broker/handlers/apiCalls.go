@@ -19,7 +19,7 @@ func AuthCall(email string, password string) (*models.JsonLogInResponseModel, er
 		return nil, err
 	}
 
-	request, err := http.NewRequest(http.MethodPost, "http://localhost:8080", bytes.NewReader(byteBody))
+	request, err := http.NewRequest(http.MethodPost, "http://192.168.1.17:8080", bytes.NewReader(byteBody))
 
 	if err != nil {
 		return nil, err

@@ -4,10 +4,19 @@ services:
     build:
       context: ./broker
       dockerfile: ./DockerFiles/deploy.dockerfile
-    image: myimg:latest
+    image: brokerimg:latest
     ports:
-      - 8080:8000
+      - 8000:8000
     container_name: brokerApi
+
+  auth:
+    build:
+      context: ./authentication
+      dockerfile: ./DockerFiles/deploy.dockerfile
+    image: authimg:latest
+    ports:
+        - 8080:8080
+    container_name: Authentication
 
   postgresql:
     image: postgres:latest
@@ -17,12 +26,21 @@ services:
     environment:
       - POSTGRES_PASSWORD=password
 
-#testing reasons
-  nginx:
-    image: nginx:latest
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongodb
     ports:
-      - 8000:80
-    container_name: nginx
-    volumes:
-      - ../routers:/mnt
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass123
+
+#testing reasons
+  # nginx:
+  #   image: nginx:latest
+  #   ports:
+  #     - 8000:80
+  #   container_name: nginx
+  #   volumes:
+  #     - ../routers:/mnt
     
