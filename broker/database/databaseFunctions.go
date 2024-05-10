@@ -59,7 +59,7 @@ func (db *DB) ApiKeyValidate(apikey string) (bool, error) {
 		return false, err
 	}
 
-	//createdTime, err := time.Parse("2006-01-02T15:04:05.999999Z", sqlRow.Created)
+	//ADD Email Check too Here
 
 	if err != nil {
 		fmt.Println("Error parsing created timestamp:", err)
@@ -85,5 +85,4 @@ func (db *DB) WriteApiKeyToDB(apikey, email string) (sql.Result, error) {
 		email,
 		time.Now(),
 	)
-
 }

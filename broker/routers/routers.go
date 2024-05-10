@@ -20,8 +20,8 @@ func NewRouter() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Post("/", handlers.Repo.EchoHandler)
-	mux.Post("/login", handlers.Repo.LogIn)
+	mux.Post("/", handlers.HandlConf.EchoHandler)
+	mux.Post("/login", handlers.HandlConf.LogIn)
 
 	return mux
 }

@@ -5,26 +5,22 @@ import (
 	"log"
 	"net/http"
 
-	"guthub.io/nicksbroker/config"
 	"guthub.io/nicksbroker/database"
 	"guthub.io/nicksbroker/handlers"
+	"guthub.io/nicksbroker/loger"
 	"guthub.io/nicksbroker/routers"
 )
 
-//TODO CREATE A MECHANISM THAT GIVES A TEMPORARY API KEY
-//401 when you miss fields
-
 func main() {
 
-	var app config.App
-
+	loger := loger.SetUpLogger()
 	db, err := database.ConnectToDB()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	handlers.NewRepo(&app, db)
+	handlers.NewHandlConf(loger, db)
 
 	srv := http.Server{
 		Addr:    ":8000",
