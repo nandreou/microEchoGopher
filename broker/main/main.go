@@ -7,23 +7,28 @@ import (
 
 	"guthub.io/nicksbroker/database"
 	"guthub.io/nicksbroker/handlers"
-	"guthub.io/nicksbroker/loger"
+	"guthub.io/nicksbroker/logger"
 	"guthub.io/nicksbroker/routers"
+)
+
+const (
+	AllowedHosts = ""
+	Port         = ":8000"
 )
 
 func main() {
 
-	loger := loger.SetUpLogger()
+	logger := logger.SetUpLogger()
 	db, err := database.ConnectToDB()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	handlers.NewHandlConf(loger, db)
+	handlers.NewHandlConf(logger, db)
 
 	srv := http.Server{
-		Addr:    ":8000",
+		Addr:    Port,
 		Handler: routers.NewRouter(),
 	}
 

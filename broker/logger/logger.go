@@ -1,4 +1,4 @@
-package loger
+package logger
 
 import (
 	"bytes"
@@ -7,19 +7,19 @@ import (
 	"time"
 )
 
-type Loger struct {
+type Logger struct {
 	BrokerRequestsURL  string
 	BrokerResponsesURL string
 }
 
-func SetUpLogger() *Loger {
-	return &Loger{
+func SetUpLogger() *Logger {
+	return &Logger{
 		"http://192.168.1.17:8081/broker-request",
 		"http://192.168.1.17:8081/broker-response",
 	}
 }
 
-func (loger *Loger) WriteLog(url string, body any) (int, error) {
+func (logger *Logger) WriteLog(url string, body any) (int, error) {
 	byteBody, err := json.Marshal(body)
 
 	if err != nil {

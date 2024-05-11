@@ -20,3 +20,20 @@ type JsonRequestModel struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+// LOGER MODELS
+type AuthRequestLogModel struct {
+	ID    string `bson:"_id,omitempty" json:"id,omitempty"`
+	IP    string `bson:"ip" json:"ip"`
+	URL   string `bson:"url" json:"url"`
+	Email string `bson:"email" json:"email"`
+}
+
+type AuthResponseLogModel struct {
+	ID     string `bson:"_id,omitempty" json:"id,omitempty"`
+	IP     string `bson:"ip" json:"ip"`
+	STATUS int    `bson:"status" json:"status"`
+	URL    string `bson:"url" json:"url"`
+	Error  string `bson:"error" json:"error"`
+	Email  string `bson:"email" json:"email"`
+}

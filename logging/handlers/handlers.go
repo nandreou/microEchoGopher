@@ -34,6 +34,8 @@ func (handlerConf *Conf) InsertBrokerReqLog(w http.ResponseWriter, r *http.Reque
 		log.Println(err)
 		return
 	}
+
+	log.Println(r.URL.String() + " HTTP: 200")
 }
 
 func (handlerConf *Conf) InsertBrokerRespLog(w http.ResponseWriter, r *http.Request) {
@@ -51,6 +53,8 @@ func (handlerConf *Conf) InsertBrokerRespLog(w http.ResponseWriter, r *http.Requ
 		log.Println(err)
 		return
 	}
+
+	log.Println(r.URL.String() + " HTTP: 200")
 }
 
 func (handlerConf *Conf) InsertAuthReqLog(w http.ResponseWriter, r *http.Request) {
@@ -68,10 +72,12 @@ func (handlerConf *Conf) InsertAuthReqLog(w http.ResponseWriter, r *http.Request
 		log.Println(err)
 		return
 	}
+
+	log.Println(r.URL.String() + " HTTP: 200")
 }
 
 func (handlerConf *Conf) InsertAuthRespLog(w http.ResponseWriter, r *http.Request) {
-	authRequest, err := validators.ValidateAuthRequestBody(w, r)
+	authRequest, err := validators.ValidateAuthResponseBody(w, r)
 
 	if err != nil {
 		http.Error(w, "Server Error", 500)
@@ -85,4 +91,6 @@ func (handlerConf *Conf) InsertAuthRespLog(w http.ResponseWriter, r *http.Reques
 		log.Println(err)
 		return
 	}
+
+	log.Println(r.URL.String() + " HTTP: 200")
 }

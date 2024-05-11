@@ -7,18 +7,18 @@ import (
 
 	"guthub.io/nicksbroker/database"
 	"guthub.io/nicksbroker/handlers/jsonrw"
-	loger "guthub.io/nicksbroker/loger"
+	"guthub.io/nicksbroker/logger"
 	"guthub.io/nicksbroker/models"
 )
 
 type HandlerConfig struct {
-	Logger *loger.Loger
+	Logger *logger.Logger
 	DB     *database.DB
 }
 
 var HandlConf HandlerConfig
 
-func NewHandlConf(a *loger.Loger, db *database.DB) {
+func NewHandlConf(a *logger.Logger, db *database.DB) {
 	HandlConf.Logger = a
 	HandlConf.DB = db
 }
@@ -45,8 +45,9 @@ func (HandlConf *HandlerConfig) LogIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !responseData.Authenticated {
+		w.WriteHeader(http.StatusUnauthorized)
+
 		if err := jsonrw.AuthWriteJSON(w, responseData, r.Header); err != nil {
-			http.Error(w, "Sorry Error", http.StatusInternalServerError)
 			log.Println("Error on Writing json: ", err)
 		}
 		return
@@ -73,25 +74,38 @@ func (HandlConf *HandlerConfig) EchoHandler(w http.ResponseWriter, r *http.Reque
 
 	requestData, err := jsonrw.ReadJSON(r, int64(maxBytes))
 
-	if err != nil {
-		log.Println("Error on Reading Data: ", err)
-		http.Error(w, `Bad Request`, http.StatusBadRequest)
-		return
-	}
-
 	//Write Request Log Start
 	status, errLog := HandlConf.Logger.WriteLog(HandlConf.Logger.BrokerRequestsURL, &models.BrokerRequestLogModel{
-		IP:    r.RemoteAddr,
-		URL:   r.URL.String(),
-		Email: requestData.Email,
+		IP:  r.RemoteAddr,
+		URL: r.URL.String(),
 	})
-
 	if errLog != nil {
 		log.Println(err)
 	} else {
 		log.Println("HTTP: /broker-request:", status)
 	}
 	//Write Request Log End
+
+	if err != nil {
+		//Write Response Log Start
+		status, errLog = HandlConf.Logger.WriteLog(HandlConf.Logger.BrokerResponsesURL, &models.BrokerResponseLogModel{
+			IP:     r.RemoteAddr,
+			URL:    r.URL.String(),
+			STATUS: 500,
+			Error:  fmt.Sprintf("Error on ReadingJSON: %s", err),
+		})
+
+		if errLog != nil {
+			log.Println(errLog)
+		} else {
+			log.Println("HTTP: /broker-response:", status)
+		}
+		//Write Response Log End
+
+		log.Println("Error on Reading Data: ", err)
+		http.Error(w, `Error`, http.StatusInternalServerError)
+		return
+	}
 
 	authenticated, err := HandlConf.DB.ApiKeyValidate(requestData.ApiKey)
 
@@ -103,7 +117,6 @@ func (HandlConf *HandlerConfig) EchoHandler(w http.ResponseWriter, r *http.Reque
 			status, errLog = HandlConf.Logger.WriteLog(HandlConf.Logger.BrokerResponsesURL, &models.BrokerResponseLogModel{
 				IP:     r.RemoteAddr,
 				URL:    r.URL.String(),
-				Email:  requestData.Email,
 				STATUS: 401,
 				Error:  `Not Authenticated: 401 GO TO "/login" to get an ApiKey`,
 			})
@@ -123,7 +136,6 @@ func (HandlConf *HandlerConfig) EchoHandler(w http.ResponseWriter, r *http.Reque
 		status, errLog = HandlConf.Logger.WriteLog(HandlConf.Logger.BrokerResponsesURL, &models.BrokerResponseLogModel{
 			IP:     r.RemoteAddr,
 			URL:    r.URL.String(),
-			Email:  requestData.Email,
 			STATUS: 500,
 			Error:  fmt.Sprintf("Error on Fetching From Database ApiKeyValidate(): %s", err),
 		})
@@ -146,7 +158,6 @@ func (HandlConf *HandlerConfig) EchoHandler(w http.ResponseWriter, r *http.Reque
 		status, errLog := HandlConf.Logger.WriteLog(HandlConf.Logger.BrokerResponsesURL, &models.BrokerResponseLogModel{
 			IP:     r.RemoteAddr,
 			URL:    r.URL.String(),
-			Email:  requestData.Email,
 			STATUS: 500,
 			Error:  fmt.Sprintf("Error on Writing json: %s", err),
 		})
@@ -166,7 +177,6 @@ func (HandlConf *HandlerConfig) EchoHandler(w http.ResponseWriter, r *http.Reque
 	status, errLog = HandlConf.Logger.WriteLog(HandlConf.Logger.BrokerResponsesURL, &models.BrokerResponseLogModel{
 		IP:     r.RemoteAddr,
 		URL:    r.URL.String(),
-		Email:  requestData.Email,
 		STATUS: 200,
 		Error:  "",
 	})

@@ -20,7 +20,7 @@ func NewRouter() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Post("/", handlers.Repo.GetUser)
+	mux.Post("/", handlers.HandlConf.GetUser)
 
 	return mux
 }

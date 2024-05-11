@@ -18,6 +18,15 @@ services:
         - 8080:8080
     container_name: Authentication
 
+  logger:
+    build:
+      context: ./logging
+      dockerfile: ./DockerFiles/deploy.dockerfile
+    image: logging:latest
+    ports:
+        - 8081:8081
+    container_name: Logging
+
   postgresql:
     image: postgres:latest
     container_name: postgres
@@ -35,12 +44,4 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=pass123
 
-#testing reasons
-  # nginx:
-  #   image: nginx:latest
-  #   ports:
-  #     - 8000:80
-  #   container_name: nginx
-  #   volumes:
-  #     - ../routers:/mnt
     

@@ -7,11 +7,11 @@ import (
 
 	"github.io/nicksauth/database"
 	"github.io/nicksauth/handlers"
+	"github.io/nicksauth/logger"
 	"github.io/nicksauth/routers"
 )
 
 func main() {
-	//var app config.App
 
 	db, err := database.ConnectToDb()
 
@@ -19,7 +19,7 @@ func main() {
 		log.Fatal("Server Failed to Start --> ", err)
 	}
 
-	handlers.NewRepo(db)
+	handlers.NewHandlConf(logger.SetUpLogger(), db)
 
 	srv := &http.Server{
 		Addr:    ":8080",
