@@ -1,0 +1,47 @@
+version: '3'
+services:
+  broker:
+    build:
+      context: ./broker
+      dockerfile: ./DockerFiles/deploy.dockerfile
+    image: brokerimg:latest
+    ports:
+      - 8000:8000
+    container_name: brokerApi
+
+  auth:
+    build:
+      context: ./authentication
+      dockerfile: ./DockerFiles/deploy.dockerfile
+    image: authimg:latest
+    ports:
+        - 8080:8080
+    container_name: Authentication
+
+  logger:
+    build:
+      context: ./logging
+      dockerfile: ./DockerFiles/deploy.dockerfile
+    image: logging:latest
+    ports:
+        - 8081:8081
+    container_name: Logging
+
+  postgresql:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=pass123
+
+    

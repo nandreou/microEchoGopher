@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-	"guthub.io/nicksbroker/handlers"
+	"github.io/nicksauth/handlers"
 )
 
 func NewRouter() http.Handler {
@@ -20,8 +20,7 @@ func NewRouter() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Post("/", handlers.HandlConf.EchoHandler)
-	mux.Post("/login", handlers.HandlConf.LogIn)
+	mux.Post("/", handlers.HandlConf.GetUser)
 
 	return mux
 }

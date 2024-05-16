@@ -5,23 +5,34 @@ import (
 	"log"
 	"net/http"
 
-	"guthub.io/nicksbroker/config"
+	"guthub.io/nicksbroker/database"
 	"guthub.io/nicksbroker/handlers"
+	"guthub.io/nicksbroker/logger"
 	"guthub.io/nicksbroker/routers"
+)
+
+const (
+	AllowedHosts = ""
+	Port         = ":8000"
 )
 
 func main() {
 
-	var app config.App
+	logger := logger.SetUpLogger()
+	db, err := database.ConnectToDB()
 
-	handlers.NewRepo(&app)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	handlers.NewHandlConf(logger, db)
 
 	srv := http.Server{
-		Addr:    ":8080",
+		Addr:    Port,
 		Handler: routers.NewRouter(),
 	}
 
-	fmt.Println("Server is Up !!!")
+	fmt.Println("Server is Up on port 8000!!!")
 
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)
